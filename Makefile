@@ -1,4 +1,4 @@
-name = mylamb
+name = lambda
 
 build:
 	ghc Main.hs -o $(name)

@@ -24,7 +24,7 @@ applyMacros str ((name, sub):xs) =
   let 
     str' = intercalate " " $ map (\word-> 
       if word == name then 
-        sub 
+        "("++ sub ++ ")"
       else word) $ words str  
   in
     applyMacros str' xs
@@ -69,16 +69,16 @@ getMacro str =
 -- data
 macros :: Namespace
 macros = [
-  ("ID", "(λx.x)"),
-  ("FALSE", "(λx.λy.y)"),
-  ("TRUE", "(λx.λy.x)"),
-  ("AND", "(λp.λq.((p q) (λx.λy.y) ))"),
-  ("IF", "(λb.λx.λy.((b x) y))"),
-  ("OR", "(λp.λq.((( (λb.λx.λy.((b x) y)) p) (λx.λy.x) ) q))"),
-  ("PAIR", "(λf.λs.λb.b f s)"),
-  ("FST", "(λf.f (λx.λy.x))"),
-  ("SND", "(λf.f (λx.λy.y))"),
-  ("ZERO", "(λs.λz.z)"),
-  ("SUCC", "(λn.λs.λz.s (n s z))"),
-  ("ISZERO", "(λf.f (λx.(λp.λq.q)) (λp.λq.p))"),
-  ("PLUS", "(λm.λn.n (λn.λs.λz.s (n s z)) m)")]
+  ("id", "(λx.x)"),
+  ("false", "(λx.λy.y)"),
+  ("true", "(λx.λy.x)"),
+  ("and", "(λp.λq.((p q) (λx.λy.y) ))"),
+  ("if", "(λb.λx.λy.((b x) y))"),
+  ("or", "(λp.λq.((( (λb.λx.λy.((b x) y)) p) (λx.λy.x) ) q))"),
+  ("pair", "(λf.λs.λb.b f s)"),
+  ("fst", "(λf.f (λx.λy.x))"),
+  ("snd", "(λf.f (λx.λy.y))"),
+  ("zero", "(λs.λz.z)"),
+  ("suc", "(λn.λs.λz.s (n s z))"),
+  ("iszero", "(λf.f (λx.(λp.λq.q)) (λp.λq.p))"),
+  ("plus", "(λm.λn.n (λn.λs.λz.s (n s z)) m)")]

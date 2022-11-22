@@ -30,13 +30,13 @@ data Term =
 printPTerm :: PTerm -> String
 printPTerm (PVar x) = x
 printPTerm (PAbs x t) = "(λ" ++ x ++ "." ++ printPTerm t ++ ")"
-printPTerm (PApp t s) = printPTerm t ++ " " ++ printPTerm s
+printPTerm (PApp t s) = "(" ++ printPTerm t ++ ") (" ++ printPTerm s ++ ")"
 
 
 printTerm :: Term -> String
 printTerm (Var x) = show x
 printTerm (Abs t) = "(λ." ++ printTerm t ++ ")"
-printTerm (App t s) = printTerm t ++ " " ++ printTerm s
+printTerm (App t s) = "(" ++ printTerm t ++ ") (" ++ printTerm s ++ ")"
 
 
 type Context = [String]
@@ -76,9 +76,9 @@ deleteNames ctx (PApp t s) = do
 
 
 restoreNames :: Context -> Term -> PTerm
-restoreNames ctx (Var x) = PVar (getName ctx x)
+restoreNames ctx (Var x) = PVar $ getName ctx x
 restoreNames ctx (App t s) = PApp (restoreNames ctx t) (restoreNames ctx s)
-restoreNames ctx (Abs t) = PAbs fresh (restoreNames ctx' t)
+restoreNames ctx (Abs t) = PAbs fresh $ restoreNames ctx' t
         where fresh = head [ var | var <- vars, not (elem var ctx)]
               vars  = ["x" ++ (show i) | i <- [0 .. ] ]
               ctx' = ctx ++ [fresh]

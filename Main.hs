@@ -28,8 +28,9 @@ asciiart = do
   hFlush stdout
 
 
-namedMode = 0
-deBrujinMode = 1
+
+data Mode = Named | Unnamed deriving Eq
+
 
 
 
@@ -41,20 +42,21 @@ main = do
     hSetBuffering stdout NoBuffering
     asciiart
     setSGR [SetColor Foreground Vivid Yellow]
-    putStrLn "                 Juλn Domandl-2022 (CALP)"
+    putStrLn "                 Juλn Domandl-2022 (FAMAF-CALP)"
     hFlush stdout;
     setSGR [Reset]
     setSGR [SetColor Foreground Dull Yellow]
-    putStrLn "                 Evaluation: Call by value \n \n"
+    putStrLn "                 Untyped lambda calculus interpreter"
+    putStrLn "                 Evaluation: call-by-value \n \n"
     hFlush stdout;
     setSGR [Reset]
 
-    loop deBrujinMode macros
+    loop Unnamed macros
 
 
 namedPrompt = do {
   setSGR [SetColor Foreground Dull Green];
-  putStr "Juλn (";
+  putStr "MyLamb (";
   setSGR [SetColor Foreground Dull Yellow];
   putStr "named 🐇";
   setSGR [SetColor Foreground Dull Green];
@@ -64,7 +66,7 @@ namedPrompt = do {
 
 deBrujinPrompt = do {
   setSGR [SetColor Foreground Dull Green];
-  putStr "Juλn (";
+  putStr "MyLamb (";
   setSGR [SetColor Foreground Dull Cyan];
   putStr "de Bruijn 🌎";
   setSGR [SetColor Foreground Dull Green];
@@ -78,10 +80,9 @@ tryMacro str =
     Just macro -> return macro
     Nothing -> do {printError "Invalid macro!"; return ("","")}
 
---loop :: IO ()
 loop mode macros = do {
     
-    if mode == namedMode then
+    if mode == Named then
       namedPrompt;
     else
       deBrujinPrompt;
@@ -89,10 +90,10 @@ loop mode macros = do {
     str' <- getLine;
     str <- pure $ applyMacros str' macros;
 
-    if str == "set de brujin" then
-      loop deBrujinMode macros
+    if str == "set unnamed" then
+      loop Unnamed macros
     else if str == "set named" then
-      loop namedMode macros
+      loop Named macros
     else if elem "let" (words str) then
       do {
         macro <- tryMacro str;
@@ -101,7 +102,7 @@ loop mode macros = do {
         else
           loop mode macros
       }
-    else if mode == deBrujinMode then
+    else if mode == Unnamed then
         printTasksDeBrujin macros $ tasksDeBrujin str;
     else
       printTasks $ tasks str;
